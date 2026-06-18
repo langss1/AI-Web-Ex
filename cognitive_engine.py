@@ -15,20 +15,30 @@ log = logging.getLogger(__name__)
 
 import os
 
-OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "localhost")
-OLLAMA_PORT = os.environ.get("OLLAMA_PORT", "11434")
-OLLAMA_URL = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/generate"
-OLLAMA_TAGS_URL = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/tags"
-
-
 class CognitiveEngine:
-    def __init__(self, model: str = "qwen2.5:7b"):
+    def __init__(self, model: str = "qwen2.5"):
         self.model = model
         self._verify_connection()
 
+    @property
+    def ollama_host(self):
+        return os.environ.get("OLLAMA_HOST", "localhost")
+
+    @property
+    def ollama_port(self):
+        return os.environ.get("OLLAMA_PORT", "11434")
+
+    @property
+    def ollama_url(self):
+        return f"http://{self.ollama_host}:{self.ollama_port}/api/generate"
+
+    @property
+    def ollama_tags_url(self):
+        return f"http://{self.ollama_host}:{self.ollama_port}/api/tags"
+
     def _verify_connection(self):
         try:
-            r = requests.get(OLLAMA_TAGS_URL, timeout=5)
+            r = requests.get(self.ollama_tags_url, timeout=5)
             models = [m["name"] for m in r.json().get("models", [])]
             if not any(self.model in m for m in models):
                 log.warning(f"[WARN]  Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}")
@@ -55,7 +65,7 @@ class CognitiveEngine:
         }
 
         try:
-            resp = requests.post(OLLAMA_URL, json=payload, timeout=120)
+            resp = requests.post(self.ollama_url, json=payload, timeout=120)
             resp.raise_for_status()
             raw_text = resp.json().get("response", "")
             log.debug(f"Raw LLM output: {raw_text[:300]}")
