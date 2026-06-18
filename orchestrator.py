@@ -71,7 +71,7 @@ DVWA_BASE       = f"http://{HOST_IP}/dvwa"
 DVWA_LOGIN_URL  = f"{DVWA_BASE}/login.php"
 DVWA_SQLI_URL   = f"{DVWA_BASE}/vulnerabilities/sqli/"
 DVWA_XSS_URL    = f"{DVWA_BASE}/vulnerabilities/xss_r/"
-OLLAMA_MODEL    = "qwen2.5:7b"
+OLLAMA_MODEL    = "qwen2.5"
 MAX_ITER        = 10          # max iterations per scenario
 DVWA_SECURITY   = "low"       # "low" | "medium" | "impossible"
 SUCCESS_PAUSE_S = 20          # seconds to pause in browser after confirmed success
@@ -135,10 +135,10 @@ class Orchestrator:
 
     # ── Main run loop ────────────────────────────────────────
     def run_scenario(self, vuln_type: str, target_url: str):
-        log.info(f"\n{'─'*50}")
+        log.info(f"\n{'-'*50}")
         log.info(f"SCENARIO: {vuln_type.upper()} | Security: {DVWA_SECURITY.upper()}")
         log.info(f"Target: {target_url}")
-        log.info(f"{'─'*50}")
+        log.info(f"{'-'*50}")
 
         self.memory.reset_pcb(vuln_type)
         iteration        = 0
@@ -159,7 +159,7 @@ class Orchestrator:
 
         while iteration < MAX_ITER:
             iteration += 1
-            log.info(f"\n[Iter {iteration}] ─────────────────────────")
+            log.info(f"\n[Iter {iteration}] {'-'*25}")
 
             # ── Build context for this iteration ──────────────
             rag_context        = self.memory.retrieve(vuln_type)
@@ -446,7 +446,7 @@ For should_continue:
         self.res_monitor.stop()
         resource_data   = self.res_monitor.summary()
 
-        # ── Final summary ────────────────────────────────────
+        # -- Final summary ------------------------------------
         log.info("\n" + "=" * 60)
         log.info("ALL SCENARIOS COMPLETE — SUMMARY")
         log.info("=" * 60)
@@ -538,9 +538,9 @@ For should_continue:
                     lines.append("")
 
         # Metrik agregat
-        lines.append("─" * 72)
+        lines.append("-" * 72)
         lines.append("METRIK EVALUASI (sesuai parameter paper)")
-        lines.append("─" * 72)
+        lines.append("-" * 72)
 
         total     = len(results_data["scenarios"])
         successes = sum(1 for r in results_data["scenarios"] if r["success"])
@@ -565,9 +565,9 @@ For should_continue:
         lines.append(f"   RAM rata-rata  : {resource.get('ram_avg_mb')} MB")
         lines.append(f"   RAM puncak     : {resource.get('ram_peak_mb')} MB")
         lines.append("")
-        lines.append("─" * 72)
+        lines.append("-" * 72)
         lines.append("KETERANGAN STOPPING CRITERIA")
-        lines.append("─" * 72)
+        lines.append("-" * 72)
         lines.append("  success_trigger          : Eksploitasi berhasil dikonfirmasi (DOM signal)")
         lines.append("  all_strategies_explored  : Semua strategi telah dicoba (minimal 1 sukses)")
         lines.append("  hard_limit               : Batas maksimal iterasi tercapai tanpa sukses")
