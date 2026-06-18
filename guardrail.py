@@ -35,7 +35,7 @@ class AntiLoopingGuardrail:
             if past.strip().lower() == payload_normalized:
                 self._blocked_count += 1
                 log.warning(
-                    f"⛔ GUARDRAIL #{self._blocked_count}: "
+                    f"[Block] GUARDRAIL #{self._blocked_count}: "
                     f"Duplicate payload detected → '{payload[:60]}'"
                 )
                 return True
@@ -53,7 +53,7 @@ class AntiLoopingGuardrail:
             
             if all(s == strategy_category for s in recent_strategies) and all(b in ("failed", "blocked") for b in recent_behaviors):
                 self._blocked_count += 1
-                log.warning(f"⛔ GUARDRAIL #{self._blocked_count}: Stagnation detected on strategy '{strategy_category}'. Forcing new strategy.")
+                log.warning(f"[Block] GUARDRAIL #{self._blocked_count}: Stagnation detected on strategy '{strategy_category}'. Forcing new strategy.")
                 return True
                 
         return False

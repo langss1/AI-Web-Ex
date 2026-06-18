@@ -286,14 +286,14 @@ class MemorySystem:
             if self._collection.count() == 0:
                 self._populate_chromadb()
             self._use_chromadb = True
-            log.info(f"✅ ChromaDB initialized — RAG enabled ({self._collection.count()} chunks)")
+            log.info(f"[OK] ChromaDB initialized — RAG enabled ({self._collection.count()} chunks)")
 
         except ImportError:
-            log.warning("⚠️  chromadb/sentence-transformers not installed.")
+            log.warning("[WARN]  chromadb/sentence-transformers not installed.")
             log.warning("   Falling back to keyword-based retrieval.")
             log.warning("   Install: pip install chromadb sentence-transformers")
         except Exception as e:
-            log.warning(f"⚠️  ChromaDB init failed: {e} — using keyword fallback.")
+            log.warning(f"[WARN]  ChromaDB init failed: {e} — using keyword fallback.")
 
     def _populate_chromadb(self):
         """Embed only the 'content' field of each chunk (not the full JSON object)."""

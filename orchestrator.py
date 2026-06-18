@@ -151,7 +151,7 @@ class Orchestrator:
         # Navigate Selenium browser to target page immediately
         if self.action.driver:
             try:
-                log.info(f"🌐 Browser navigating to: {target_url}")
+                log.info(f"[Web] Browser navigating to: {target_url}")
                 self.action.driver.get(target_url)
                 time.sleep(0.5)
             except Exception as e:
@@ -168,7 +168,7 @@ class Orchestrator:
 
             # If all strategies tried + at least 1 success → stop exploring
             if not untried_strategies and success:
-                log.info("✅ All strategies explored and at least 1 success found. Stopping.")
+                log.info("[OK] All strategies explored and at least 1 success found. Stopping.")
                 stopping_criteria = "all_strategies_explored"
                 break
 
@@ -195,7 +195,7 @@ class Orchestrator:
 
             # 4. Check legacy FINISH flag
             if response.get("finish") and success:
-                log.info("✅ Agent declared FINISH after exploration.")
+                log.info("[OK] Agent declared FINISH after exploration.")
                 stopping_criteria = "agent_finish"
                 break
 
@@ -209,7 +209,7 @@ class Orchestrator:
 
             # 4. Guardrail check
             if self.guardrail.is_blocked(vuln_type, payload, strategy_category):
-                log.warning("⛔ GUARDRAIL BLOCKED. Forcing new strategy.")
+                log.warning("[Block] GUARDRAIL BLOCKED. Forcing new strategy.")
                 self.memory.add_pcb(
                     vuln_type, payload, response.get("thought", ""),
                     "blocked", strategy_category,
@@ -311,7 +311,7 @@ class Orchestrator:
         ]
 
         failed_str  = "\n".join(f"  - {p}" for p in failed_payloads)  or "  (none yet)"
-        success_str = "\n".join(f"  ✅ {p}" for p in success_payloads) or "  (none yet)"
+        success_str = "\n".join(f"  [OK] {p}" for p in success_payloads) or "  (none yet)"
         env_str     = json.dumps(env_profile, indent=2) if env_profile else "{}"
         untried_str = ", ".join(untried_strategies) if untried_strategies else "all strategies already attempted"
 
@@ -412,7 +412,7 @@ For should_continue:
 """
 
     def _log_result(self, result):
-        status = "✅ SUCCESS" if result["success"] else "❌ FAILED"
+        status = "[OK] SUCCESS" if result["success"] else "[ERR] FAILED"
         log.info(f"\n{'='*50}")
         log.info(f"RESULT: {status}")
         log.info(f"  Vuln              : {result['vuln_type'].upper()}")
@@ -451,7 +451,7 @@ For should_continue:
         log.info("ALL SCENARIOS COMPLETE — SUMMARY")
         log.info("=" * 60)
         for r in self.results:
-            status = "✅" if r["success"] else "❌"
+            status = "[OK]" if r["success"] else "[ERR]"
             log.info(
                 f"  {status} {r['vuln_type'].upper():5} | {r['security'].upper():6} | "
                 f"Iters: {r['iterations']:2}/{MAX_ITER} | "
@@ -581,7 +581,7 @@ For should_continue:
         with open(report_path, "w", encoding="utf-8") as f:
             f.write(report_text)
 
-        log.info(f"\n📄 Report saved to: {report_path}")
+        log.info(f"\n[Doc] Report saved to: {report_path}")
         log.info("\n" + report_text)
 
 

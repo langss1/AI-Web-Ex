@@ -31,11 +31,11 @@ class CognitiveEngine:
             r = requests.get(OLLAMA_TAGS_URL, timeout=5)
             models = [m["name"] for m in r.json().get("models", [])]
             if not any(self.model in m for m in models):
-                log.warning(f"⚠️  Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}")
+                log.warning(f"[WARN]  Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}")
             else:
-                log.info(f"✅ Ollama connected | Model: {self.model}")
+                log.info(f"[OK] Ollama connected | Model: {self.model}")
         except Exception as e:
-            log.error(f"❌ Cannot connect to Ollama: {e}")
+            log.error(f"[ERR] Cannot connect to Ollama: {e}")
             log.error("   Make sure Ollama is running: ollama serve")
 
     def reason(self, prompt: str) -> dict:

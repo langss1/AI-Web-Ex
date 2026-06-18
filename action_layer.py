@@ -116,9 +116,9 @@ class ActionLayer:
             time.sleep(1)
 
             if "login.php" not in self.driver.current_url:
-                log.info("✅ DVWA login successful via Selenium.")
+                log.info("[OK] DVWA login successful via Selenium.")
             else:
-                log.warning("⚠️  Login may have failed — still on login.php")
+                log.warning("[WARN]  Login may have failed — still on login.php")
 
             # Set security level via form (browser visible)
             sec_url = self.base_url + "/security.php"
@@ -135,7 +135,7 @@ class ActionLayer:
             log.info(f"Security level set to: {security_level}")
 
         except WebDriverException as e:
-            log.error(f"❌ WebDriver error during login: {e}")
+            log.error(f"[ERR] WebDriver error during login: {e}")
         except Exception as e:
             log.error(f"Login error: {e}")
         return self.driver
