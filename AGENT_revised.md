@@ -354,3 +354,22 @@ def run_agent(target_url, max_iteration=10):
 - **Lingkungan Eksekusi**: Dikonfirmasi dijalankan secara *native* pada mesin lokal host (Windows/Linux) tanpa harus ke VM Kali Linux. LLM tetap lokal (Ollama) dan Embedding RAG dijalankan lokal (`nomic-embed-text` atau sejenisnya) untuk patuh terhadap privasi (NFR1). Target DVWA berjalan di Docker/XAMPP lokal.
 - **Integrasi Action Layer Hybrid**: Solusi yang lebih fleksibel, di mana agen dapat dinamis memilih HTTP/Selenium/Subprocess via prompt.
 - **Login Sesi DVWA**: Scout Phase dirancang untuk melakukan auto-login dan konfigurasi `security` cookie agar loop tidak gagal prematur.
+
+---
+
+## 10. Panduan Eksekusi Lintas Lingkungan (VM Kali Linux ke Host Windows)
+
+Jika ingin menjalankan kode agen ini dari dalam Virtual Machine (VM) Kali Linux, namun tetap memanfaatkan GPU Host (Windows) untuk Ollama dan target DVWA di Host:
+
+1. Pastikan **Ollama di Windows** sudah dikonfigurasi agar mendengarkan pada `0.0.0.0` melalui variabel lingkungan (`OLLAMA_HOST=0.0.0.0`).
+2. Di dalam file `orchestrator.py`, ubah konfigurasi Network Mode menjadi `True`:
+   ```python
+   # ── Network & Environment Config ────────────────────────────
+   RUNNING_IN_VM = True
+   ```
+3. Script akan otomatis mendeteksi konfigurasi ini dan mengarahkan API Ollama serta target DVWA ke IP NAT Host VirtualBox (`10.0.2.2`).
+4. Jalankan script di terminal Kali Linux seperti biasa:
+   ```bash
+   python3 orchestrator.py
+   ```
+Dengan pendekatan ini, script bisa dieksekusi di OS penyerang standar (Kali Linux) tanpa menguras resource VM, karena inferensi AI yang berat tetap berjalan di mesin fisik (Windows).

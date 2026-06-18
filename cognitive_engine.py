@@ -13,7 +13,12 @@ import requests
 
 log = logging.getLogger(__name__)
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
+import os
+
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "localhost")
+OLLAMA_PORT = os.environ.get("OLLAMA_PORT", "11434")
+OLLAMA_URL = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/generate"
+OLLAMA_TAGS_URL = f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/tags"
 
 
 class CognitiveEngine:
@@ -23,7 +28,7 @@ class CognitiveEngine:
 
     def _verify_connection(self):
         try:
-            r = requests.get("http://localhost:11434/api/tags", timeout=5)
+            r = requests.get(OLLAMA_TAGS_URL, timeout=5)
             models = [m["name"] for m in r.json().get("models", [])]
             if not any(self.model in m for m in models):
                 log.warning(f"⚠️  Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}")

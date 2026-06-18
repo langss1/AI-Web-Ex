@@ -52,14 +52,28 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
+# ── Network & Environment Config ────────────────────────────
+# Set ke True JIKA menjalankan script ini di dalam VM (Kali Linux) 
+# dan menargetkan DVWA & Ollama yang berjalan di Windows.
+# Set ke False JIKA menjalankan script ini langsung di Windows.
+RUNNING_IN_VM = False
+
+if RUNNING_IN_VM:
+    HOST_IP = "10.0.2.2"  # IP NAT bawaan VirtualBox untuk Host (Windows)
+else:
+    HOST_IP = "localhost"
+
+# Paksa cognitive_engine.py untuk membaca IP ini
+os.environ["OLLAMA_HOST"] = HOST_IP
+
 # ── Config ──────────────────────────────────────────────────
-DVWA_BASE       = "http://localhost/dvwa"
+DVWA_BASE       = f"http://{HOST_IP}/dvwa"
 DVWA_LOGIN_URL  = f"{DVWA_BASE}/login.php"
 DVWA_SQLI_URL   = f"{DVWA_BASE}/vulnerabilities/sqli/"
 DVWA_XSS_URL    = f"{DVWA_BASE}/vulnerabilities/xss_r/"
 OLLAMA_MODEL    = "qwen2.5:7b"
 MAX_ITER        = 10          # max iterations per scenario
-DVWA_SECURITY   = "impossible"       # "low" | "medium"
+DVWA_SECURITY   = "low"       # "low" | "medium" | "impossible"
 SUCCESS_PAUSE_S = 20          # seconds to pause in browser after confirmed success
 
 
