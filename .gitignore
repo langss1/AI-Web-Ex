@@ -1,0 +1,5 @@
+__pycache__/
+logs/
+memory/pcb_state.json
+*.pyc
+.env
